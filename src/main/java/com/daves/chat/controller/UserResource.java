@@ -35,6 +35,14 @@ public class UserResource {
         return service.get(id);
     }
 
+    @DeleteMapping("/users")
+    public void deleteUser(@RequestParam Integer id) {
+        User user = service.deleteById(id);
+        if (user == null) {
+            throw new UserNotFoundException("id: " + id);
+        }
+    }
+
     @PostMapping("/users")
     public ResponseEntity<Object> addUser(@RequestBody User user) {
         User newUser = service.add(user);
@@ -47,4 +55,6 @@ public class UserResource {
 
         return ResponseEntity.created(location).build();
     }
+
+
 }
