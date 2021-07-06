@@ -1,39 +1,40 @@
 package com.daves.chat.model;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
-    private Integer id;
-    private String name;
-    private Date birthDate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "id")
+    private Long id;
 
-    public User(Integer id, String name, Date birthDate) {
-        this.id = id;
-        this.name = name;
-        this.birthDate = birthDate;
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    public User() {
     }
 
-    public Integer getId() {
+    public User(String username) {
+        this.username = username;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
