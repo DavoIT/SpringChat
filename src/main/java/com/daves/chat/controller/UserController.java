@@ -1,19 +1,18 @@
 package com.daves.chat.controller;
 
+import com.daves.chat.exception.IncorrectKeyUsedException;
 import com.daves.chat.exception.UserAlreadyExistsException;
 import com.daves.chat.repository.UserRepository;
 import com.daves.chat.exception.UserNotFoundException;
 import com.daves.chat.model.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,14 +36,16 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public User signUpWithUsername(@RequestBody String username) {
-        //TODO Have to get rid of Quotation marks in username without .replaceAll
-        String s = username.replaceAll("\"", "");
-        User user = userRepository.getUserByUsername(s);
+    public User signUpWithUsername(@RequestBody Map<String, String> signUpRequestBody) {
+        String username = signUpRequestBody.get("username");
+        if (username == null || username.isEmpty()) {
+            throw new IncorrectKeyUsedException();
+        }
+        User user = userRepository.getUserByUsername(username);
         if (user == null) {
-            return userRepository.save(new User(s));
+            return userRepository.save(new User(username));
         } else {
-            throw new UserAlreadyExistsException(s);
+            throw new UserAlreadyExistsException(username);
         }
     }
 

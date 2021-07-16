@@ -1,19 +1,28 @@
 package com.daves.chat.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "username", nullable = false)
+    @Size(min = 2)
     private String username;
+
+    @ManyToMany
+    @JoinTable(name = "user_chats",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "chat_id"))
+    @Transient
+    private List<Chat> chats;
 
     public User() {
     }

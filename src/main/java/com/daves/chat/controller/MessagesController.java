@@ -17,7 +17,7 @@ public class MessagesController {
 
     @GetMapping("/messages")
     public List<Message> getMessagesForChat(@RequestParam Long id) {
-        return messageRepository.findAll();
+        return messageRepository.getMessagesForChat(id);
     }
 
     @PostMapping("/messages")

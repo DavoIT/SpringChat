@@ -13,7 +13,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.id != ?1 ORDER BY id ASC")
-    public List<User> getAllUsers(@Param("id") Long id);
+    public List<User> getAllUsers(Long id);
 
     public void deleteById(@NonNull Long id);
 

@@ -1,5 +1,6 @@
 package com.daves.chat.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.daves.chat.exception.ChatNotFoundException;
 import com.daves.chat.model.Chat;
 import com.daves.chat.repository.ChatRepository;
@@ -10,25 +11,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class ChatController {
     @Autowired
     ChatRepository chatRepository;
 
-    @GetMapping("/chats")
-    public Chat getChatWithParticipants(@RequestParam Long participantId1, @RequestParam Long participantId2) {
-        Chat chat = chatRepository.getChatWithParticipants(participantId1, participantId2);
-        if (chat == null) {
-            return (Chat) addChat(new Chat(participantId1, participantId2)).getBody();
-        } else {
-            return chat;
-        }
-    }
-
     @GetMapping("/all-chats")
-    public List<Chat> getChatWithParticipant(@RequestParam Long id) {
-        return chatRepository.getChatsWithParticipant(id);
+    public List<Chat> getAllChats() {
+        return chatRepository.findAll();
     }
 
     @DeleteMapping("/chats")
@@ -50,6 +43,21 @@ public class ChatController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping("/chats")
+    public void changeChatName(@RequestBody Map<String, Object> chat) {
+        JSONObject jsonObject = new JSONObject(chat);
+        Long chatId = jsonObject.getLong("id");
+        String chatName = jsonObject.getString("name");
+        Optional<Chat> c = chatRepository.findById(chatId);
+        if (c.isPresent()) {
+            Chat existingChat = c.get();
+            existingChat.setName(chatName);
+            chatRepository.save(existingChat);
+        } else {
+            throw new ChatNotFoundException(chatId);
+        }
     }
 
 }

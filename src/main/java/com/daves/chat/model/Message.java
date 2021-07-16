@@ -13,9 +13,6 @@ public class Message {
     @Column(name = "sender_id", nullable = false)
     private Long senderId;
 
-    @Column(name = "receiver_id", nullable = false)
-    private Long receiverId;
-
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
 
@@ -25,10 +22,9 @@ public class Message {
     public Message() {
     }
 
-    public Message(Long id, Long senderId, Long receiverId, String text) {
+    public Message(Long id, Long senderId, String text) {
         this.id = id;
         this.senderId = senderId;
-        this.receiverId = receiverId;
         this.text = text;
     }
 
@@ -46,14 +42,6 @@ public class Message {
 
     public void setSenderId(Long senderId) {
         this.senderId = senderId;
-    }
-
-    public Long getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(Long receiverId) {
-        this.receiverId = receiverId;
     }
 
     public String getText() {

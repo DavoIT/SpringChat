@@ -1,27 +1,31 @@
 package com.daves.chat.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "chats")
-public class Chat {
+public class Chat implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "participant_id1", nullable = false)
-    private Long participantId1;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "participant_id2", nullable = false)
-    private Long participantId2;
+    @OneToMany
+    @Transient
+    private List<Message> messages;
+
+    @ManyToMany
+    @JoinTable(name = "user_chats",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> users;
 
     public Chat() {
-    }
-
-    public Chat(Long participantId1, Long participantId2) {
-        this.participantId1 = participantId1;
-        this.participantId2 = participantId2;
     }
 
     public Long getId() {
@@ -32,19 +36,27 @@ public class Chat {
         this.id = id;
     }
 
-    public Long getParticipantId1() {
-        return participantId1;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setParticipantId1(Long participantId1) {
-        this.participantId1 = participantId1;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
-    public Long getParticipantId2() {
-        return participantId2;
+    public String getName() {
+        return name;
     }
 
-    public void setParticipantId2(Long participantId2) {
-        this.participantId2 = participantId2;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }
