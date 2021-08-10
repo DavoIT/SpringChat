@@ -1,5 +1,8 @@
 package com.daves.chat.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 
 @Entity
@@ -26,6 +29,27 @@ public class Message {
         this.id = id;
         this.senderId = senderId;
         this.text = text;
+    }
+
+    public static Message fromJSON(JSONObject jsonObject) throws JSONException {
+        Message message = new Message();
+        message.chatId = jsonObject.getLong("chat_id");
+        message.senderId = jsonObject.getLong("sender_id");
+        message.text = jsonObject.getString("text");
+        return message;
+    }
+
+    public JSONObject toJSON() {
+        JSONObject result = new JSONObject();
+        try {
+            result.put("id", id);
+            result.put("sender_id", senderId);
+            result.put("chat_id", chatId);
+            result.put("text", text);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public Long getId() {

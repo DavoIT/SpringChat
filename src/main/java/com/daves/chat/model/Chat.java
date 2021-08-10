@@ -2,6 +2,7 @@ package com.daves.chat.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,8 +17,7 @@ public class Chat implements Serializable {
     private String name;
 
     @OneToMany
-    @Transient
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "user_chats",

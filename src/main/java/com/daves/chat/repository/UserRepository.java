@@ -11,15 +11,14 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
     @Query("SELECT u FROM User u WHERE u.id != ?1 ORDER BY id ASC")
     public List<User> getAllUsers(Long id);
 
     public void deleteById(@NonNull Long id);
 
-    @Query("SELECT u FROM User u WHERE u.username = ?1")
+    @Query(value = "SELECT u FROM User u WHERE u.username = ?1")
     public User getUserByUsername(String username);
 
-    @Query("update User u set u.username = :username where u.id = :id")
+    @Query(value = "update User u set u.username = :username where u.id = :id")
     public void updateUsername(@Param("id") Long id, @Param("username") String username);
 }

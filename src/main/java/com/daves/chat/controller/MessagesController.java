@@ -21,5 +21,4 @@ public class MessagesController {
     public Message addMessage(@RequestBody Message message) {
         return messageRepository.save(message);
     }
-
 }

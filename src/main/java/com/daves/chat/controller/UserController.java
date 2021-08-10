@@ -36,13 +36,13 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public User signUpWithUsername(@RequestBody Map<String, String> signUpRequestBody) {
-        String username = signUpRequestBody.get("username");
-        if (username == null || username.isEmpty()) {
-            throw new IncorrectKeyUsedException();
-        }
+    public User signUpWithUsername(@RequestBody User signUpRequestBody) {
+        String username = signUpRequestBody.getUsername();
         User user = userRepository.getUserByUsername(username);
         if (user == null) {
+            if (username == null || username.isEmpty()) {
+                throw new IncorrectKeyUsedException();
+            }
             return userRepository.save(new User(username));
         } else {
             throw new UserAlreadyExistsException(username);

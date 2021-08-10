@@ -1,5 +1,9 @@
 package com.daves.chat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -21,7 +25,7 @@ public class User implements Serializable {
     @JoinTable(name = "user_chats",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id"))
-    @Transient
+    @JsonIgnore
     private List<Chat> chats;
 
     public User() {
@@ -45,5 +49,24 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<Chat> getChats() {
+        return chats;
+    }
+
+    public void setChats(List<Chat> chats) {
+        this.chats = chats;
+    }
+
+        public JSONObject toJSON() {
+            JSONObject result = new JSONObject();
+            try {
+                result.put("id", id);
+                result.put("username", username);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
     }
 }
