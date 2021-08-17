@@ -59,14 +59,14 @@ public class User implements Serializable {
         this.chats = chats;
     }
 
-        public JSONObject toJSON() {
-            JSONObject result = new JSONObject();
-            try {
-                result.put("id", id);
-                result.put("username", username);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return result;
+    public JSONObject toJSON() {
+        JSONObject result = new JSONObject();
+        try {
+            result.put("id", id);
+            result.put("username", username);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
