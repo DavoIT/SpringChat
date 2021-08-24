@@ -6,12 +6,11 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
@@ -39,12 +38,12 @@ public class User implements Serializable {
         return id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void setUsername(String username) {

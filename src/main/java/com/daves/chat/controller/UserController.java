@@ -2,14 +2,15 @@ package com.daves.chat.controller;
 
 import com.daves.chat.exception.IncorrectKeyUsedException;
 import com.daves.chat.exception.UserAlreadyExistsException;
-import com.daves.chat.repository.UserRepopo;
 import com.daves.chat.exception.UserNotFoundException;
 import com.daves.chat.model.User;
+import com.daves.chat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -17,16 +18,16 @@ import java.util.Optional;
 @RestController
 public class UserController {
     @Autowired
-    UserRepopo userRep;
+    UserRepository userRepository;
 
     @GetMapping("/all-users")
     public List<User> getAllUsers(@RequestParam Long id) {
-        return userRep.getAllUsers(id);
+        return userRepository.getAllUsers(id);
     }
 
     @GetMapping("/login")
     public User loginWithUsername(@RequestParam String username) {
-        User user = userRep.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username);
         if (user == null) {
             throw new UserNotFoundException(username);
         } else {
@@ -37,12 +38,12 @@ public class UserController {
     @PostMapping("/sign-up")
     public User signUpWithUsername(@RequestBody User signUpRequestBody) {
         String username = signUpRequestBody.getUsername();
-        User user = userRep.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username);
         if (user == null) {
             if (username == null || username.isEmpty()) {
                 throw new IncorrectKeyUsedException();
             }
-            return userRep.save(new User(username));
+            return userRepository.save(new User(username));
         } else {
             throw new UserAlreadyExistsException(username);
         }
@@ -50,7 +51,7 @@ public class UserController {
 
     @GetMapping("/users")
     public User getUser(@RequestParam Long id) {
-        Optional<User> u = userRep.findById(id);
+        Optional<User> u = userRepository.findById(id);
         if (!u.isPresent()) {
             throw new UserNotFoundException(id.toString());
         } else {
@@ -58,17 +59,27 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user")
+    public User getUserById(@RequestParam Long id) {
+        try {
+            User u = userRepository.getById(id);
+            return u;
+        } catch (EntityNotFoundException e) {
+            throw new UserNotFoundException(id.toString());
+        }
+    }
+
     @DeleteMapping("/users")
     public void deleteUser(@RequestParam Long id) {
-        if (!userRep.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new UserNotFoundException(id);
         }
-        userRep.deleteById(id);
+        userRepository.deleteById(id);
     }
 
     @PostMapping("/users")
     public ResponseEntity<Object> addUser(@RequestBody User user) {
-        User newUser = userRep.save(user);
+        User newUser = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -81,8 +92,8 @@ public class UserController {
 
     @PutMapping("/users")
     public void updateUser(@RequestBody User user) {
-        User existingUser = userRep.getById(user.getId());
+        User existingUser = userRepository.getById(user.getId());
         existingUser.setUsername(user.getUsername());
-        userRep.save(existingUser);
+        userRepository.save(existingUser);
     }
 }
